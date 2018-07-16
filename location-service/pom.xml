@@ -47,10 +47,6 @@
             <artifactId>spring-retry</artifactId>
             <version>1.2.2.RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>pl.project13.maven</groupId>
-            <artifactId>git-commit-id-plugin</artifactId>
-        </dependency>
         <!-- in memory database, useful for unit testing-->
         <!--<dependency>-->
             <!--<groupId>com.h2database</groupId>-->
