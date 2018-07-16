@@ -47,6 +47,11 @@
             <artifactId>spring-retry</artifactId>
             <version>1.2.2.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
         <!-- in memory database, useful for unit testing-->
         <!--<dependency>-->
             <!--<groupId>com.h2database</groupId>-->
