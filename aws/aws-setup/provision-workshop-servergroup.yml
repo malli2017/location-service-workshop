@@ -1,0 +1,84 @@
+---
+# Run first if not done already:
+# Requires python 2.7, awscli and boto installed
+# sudo apt-get install python2.7 python-pip
+# sudo pip install pip --upgrade
+# sudo pip install awscli
+# sudo pip install boto
+#
+# aws configure
+#   enter access key and secret based on IAM user
+#   enter region us-west-2
+#   output format: json
+#
+# include this playbook in another playbook for each group, example:
+# - include: provision-workshop-servergroup.yml group_tag=demo
+#
+# or run
+# ansible-playbookt -e "group_tag=group1" provision-workshop-servergroup.yml
+#
+# We start by creating a security group that opens up several ports in the VPC to
+# external hosts, this grants us SSH and HTTP access. We also opened 8080 so that
+# Jenkins can be reached and 3306 to inspect the database in case of failures.
+# Use different settings in a real-world production environment
+
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: create workshop security group
+      ec2_group:
+        name: workshop_wide_open
+        description: Opens the ports 22, 80 and 3000-40000 on all machines in us-west-2
+        region: us-west-2
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            ports:
+              - 3000-40000
+            cidr_ip: 0.0.0.0/0
+        rules_egress:
+          - proto: all
+            from_port: 0
+            to_port: 65535
+            cidr_ip: 0.0.0.0/0
+
+# Start the 3 servers we need for the location-workshop, by default we use the group demo, but
+# this script can be run multiple times with different parameters passed -e "group_tag=group1"
+# in order to create a set of servers for a specific group
+- hosts: localhost
+  connection: local
+  strategy: free
+  gather_facts: False
+  vars:
+    wait_till_running: false
+    key_pair: location-workshop-keypair
+    group_tag: demo
+    instance_type: t2.small
+  tasks:
+    - debug: msg="provisioning {{ group_tag }}"
+    - name: starting servers
+      ec2:
+        key_name: "{{ key_pair }}"
+        type: "{{ instance_type }}"
+        image: ami-2a7d75c0
+        region: us-west-2
+        group: workshop_wide_open  # security group!
+        wait: "{{ wait_till_running }}"
+        count: 1
+        user_data: "{{ lookup('file', '{{ item.provision_script }}') }}"  # user_data automatically runs a script when the machine is available, we could also do this using ansible!
+        instance_tags:
+          group: "{{ group_tag }}"
+          type: "{{ item.tag }}"
+          serverid: "{{ group_tag }}_{{ item.tag }}"
+      register: ec2
+      with_items:
+        - {tag: 'buildserver',  provision_script: 'aws-ansiblecc-setup.sh'}
+        - {tag: 'acc_docker',   provision_script: 'aws-awsnode-setup.sh'}
+        - {tag: 'prd_docker',   provision_script: 'aws-awsnode-setup.sh'}

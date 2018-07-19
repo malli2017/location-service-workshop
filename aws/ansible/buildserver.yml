@@ -1,0 +1,18 @@
+---
+- hosts: buildserver
+  become: yes
+  roles:
+    - angstwad.docker_ubuntu
+    - geerlingguy.java
+    - geerlingguy.jenkins
+
+- hosts: buildserver
+  become: yes
+  tasks:
+    - name: copy workshop private key to jenkins .ssh folder for automated deployments
+      copy:
+        src: ../aws-setup/workshop_ansiblecc_key
+        dest: ~jenkins/.ssh/workshop_ansiblecc_key
+        mode: 0600
+        owner: jenkins
+        group: jenkins

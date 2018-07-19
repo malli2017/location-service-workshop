@@ -1,0 +1,55 @@
+---
+# Run first if not done already:
+# Requires python 2.7, awscli and boto installed
+# sudo apt-get install python2.7 python-pip
+# sudo pip install pip --upgrade
+# sudo pip install awscli
+# sudo pip install boto
+#
+# aws configure
+#   enter access key and secret based on IAM user
+#   enter region us-west-2
+#   output format: json
+#
+# ssh-agent bash
+# ssh-add workshop_ansiblecc_key
+# export ANSIBLE_HOST_KEY_CHECKING=False
+#
+# ansible-playbook -i ../ansible/production configure-inventories-for-each-group.yml \
+#           -e "ansible_read_access_key=READONLY_KEY ansible_read_secret_key=READONLY_SECRET"
+#
+# Automatically configures the right inventories per group this avoids each group having to manually configure their server.
+# The playbook loops over all buildservers, and templates the inventory files out to the servers. The template uses
+# item.environment and ec2_tag_group to derive the correct values.
+# this playbook is idempotent!
+
+- hosts: tag_type_buildserver
+  gather_facts: yes
+  vars:
+    ansible_read_access_key: __fill_in_or_pass_as_argument__
+    ansible_read_secret_key: __fill_in_or_pass_as_argument__
+  tasks:
+    - name: configure staging inventory for {{ ec2_tag_group }}
+      template:
+        src: templates/inventory_template.j2
+        dest: "{{ item.target }}"
+        mode: 0664
+      with_items:
+        - { environment: 'acc', target: '/home/ubuntu/location-service-workshop/ansible/staging/staging' }
+        - { environment: 'prd', target: '/home/ubuntu/location-service-workshop/ansible/production/production' }
+    - name: configure read-only ec2 access keys
+      lineinfile:
+        dest: "{{ item }}"
+        regexp: '^aws_access_key_id = .*$'
+        line: aws_access_key_id = {{ ansible_read_access_key }}
+      with_items:
+        - /home/ubuntu/location-service-workshop/ansible/production/ec2.ini
+        - /home/ubuntu/location-service-workshop/ansible/staging/ec2.ini
+    - name: configure read-only ec2 secret keys
+      lineinfile:
+        dest: "{{ item }}"
+        regexp: '^aws_secret_access_key = .*$'
+        line: aws_secret_access_key = {{ ansible_read_secret_key }}
+      with_items:
+        - /home/ubuntu/location-service-workshop/ansible/production/ec2.ini
+        - /home/ubuntu/location-service-workshop/ansible/staging/ec2.ini
