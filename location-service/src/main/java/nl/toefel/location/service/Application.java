@@ -3,8 +3,6 @@ package nl.toefel.location.service;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import nl.toefel.location.service.controller.CustomerController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +13,7 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.filter.CorsFilter;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -31,8 +30,6 @@ import static com.google.common.collect.Sets.newHashSet;
 @EnableRetry
 @EnableSwagger2
 public class Application {
-
-    public static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -60,17 +57,17 @@ public class Application {
     public HikariDataSource dataSource() {
         Config cfg = Config.fromEnvironment();
 
-        HikariConfig hikaryConfig = new HikariConfig();
-        hikaryConfig.setJdbcUrl(cfg.getDatabaseUrl());
-        hikaryConfig.setDriverClassName(cfg.getDatabaseDriverClassName());
-        hikaryConfig.setUsername(cfg.getDatabaseUsername());
-        hikaryConfig.setPassword(cfg.getDatabasePassword());
+        HikariConfig hikariCfg = new HikariConfig();
+        hikariCfg.setJdbcUrl(cfg.getDatabaseUrl());
+        hikariCfg.setDriverClassName(cfg.getDatabaseDriverClassName());
+        hikariCfg.setUsername(cfg.getDatabaseUsername());
+        hikariCfg.setPassword(cfg.getDatabasePassword());
 
-        return new HikariDataSource(hikaryConfig);
+        return new HikariDataSource(hikariCfg);
     }
 
     @Bean
-    public Docket productApi() {
+    public Docket swaggerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(CustomerController.class.getPackage().getName()))
@@ -88,4 +85,5 @@ public class Application {
         source.registerCorsConfiguration("/**", corsConfig);
         return new CorsFilter(source);
     }
+
 }
