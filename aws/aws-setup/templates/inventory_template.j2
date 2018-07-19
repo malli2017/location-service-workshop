@@ -3,8 +3,6 @@
 
 [tag_serverid_{{ ec2_tag_group }}_{{ item.environment }}_docker]
 
-[tag_serverid_{{ ec2_tag_group }}_{{ item.environment }}_database]
-
 [tag_serverid_{{ ec2_tag_group }}_buildserver]
 
 # However, the platform scripts and the delivery pipeline use generic names,
@@ -14,13 +12,9 @@
 [docker:children]
 tag_serverid_{{ ec2_tag_group }}_{{ item.environment }}_docker
 
-[db:children]
-tag_serverid_{{ ec2_tag_group }}_{{ item.environment }}_database
-
 [buildserver:children]
 tag_serverid_{{ ec2_tag_group }}_buildserver
 
 [allservers:children]
 docker
-db
 buildserver
