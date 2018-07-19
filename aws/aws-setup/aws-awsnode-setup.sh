@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+sudo apt install -y python
+
 echo "creating .ssh directory ..."
 cd /home/ubuntu
 mkdir -p .ssh

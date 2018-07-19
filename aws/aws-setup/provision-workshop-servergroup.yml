@@ -67,7 +67,7 @@
       ec2:
         key_name: "{{ key_pair }}"
         type: "{{ instance_type }}"
-        image: ami-2a7d75c0
+        image: ami-ba602bc2
         region: us-west-2
         group: workshop_wide_open  # security group!
         wait: "{{ wait_till_running }}"
