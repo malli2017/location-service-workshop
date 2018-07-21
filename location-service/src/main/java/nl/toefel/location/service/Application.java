@@ -2,7 +2,7 @@ package nl.toefel.location.service;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import nl.toefel.location.service.controller.CustomerController;
+import nl.toefel.location.service.controller.VersionController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,6 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.filter.CorsFilter;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -70,7 +69,7 @@ public class Application {
     public Docket swaggerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage(CustomerController.class.getPackage().getName()))
+                .apis(RequestHandlerSelectors.basePackage(VersionController.class.getPackage().getName()))
                 .paths(PathSelectors.any())
                 .build()
                 .protocols(newHashSet("http"))
