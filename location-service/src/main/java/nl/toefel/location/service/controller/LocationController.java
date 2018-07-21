@@ -42,7 +42,7 @@ public class LocationController {
             value = "Finds a location by name",
             notes = "Finds a location by it's name.",
             response = Location.class)
-    @GetMapping("/locations/{name}")
+    @GetMapping("/v1/locations/{name}")
     public Optional<Location> findByName(@PathVariable String name) {
         return locationRepository.findByName(name);
     }
@@ -52,7 +52,7 @@ public class LocationController {
             notes = "Deletes a location by it's name, returns the location if was actually deleted, 404 otherwise.",
             response = Location.class
     )
-    @DeleteMapping("/locations/{name}")
+    @DeleteMapping("/v1/locations/{name}")
     public ResponseEntity<?> deleteByName(@PathVariable String name) {
         Optional<Location> optionalLocation = locationRepository.findByName(name);
         optionalLocation.ifPresent(location -> locationRepository.delete(location));
@@ -68,7 +68,7 @@ public class LocationController {
             value = "Creates a new location",
             notes = "Creates a new location. The name of the location is it's functional key and must be unqiue. Returns the saved location",
             response = Location.class)
-    @PostMapping("/locations")
+    @PostMapping("/v1/locations")
     public ResponseEntity<?> create(@RequestBody Location location) {
         try {
             Location newLocation = locationRepository.save(location);
@@ -83,9 +83,10 @@ public class LocationController {
     /**
      * Handle all exceptions by returning a uniform response to the client. This simplifies the clients because they
      * can depend on the GenericResponse type for all non 200 responses.
+     *
      * @param ex
      * @param request
-     * @return
+     * @return a {@link GenericResponse} describing the error
      */
     @ExceptionHandler({Exception.class})
     public ResponseEntity<?> handleAll(Exception ex, WebRequest request) {
