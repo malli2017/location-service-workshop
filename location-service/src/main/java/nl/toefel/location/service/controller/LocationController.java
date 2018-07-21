@@ -9,7 +9,6 @@ import nl.toefel.location.service.entity.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +38,29 @@ public class LocationController {
     private LocationRepository locationRepository;
 
     @ApiOperation(
+            value = "Finds all locations",
+            notes = "Finds all locations, no paging support or filtering is implemented yet")
+    @GetMapping("/v1/locations")
+    public Iterable<Location> findAll() {
+        return locationRepository.findAll();
+    }
+
+    @ApiOperation(
+            value = "Creates a new location",
+            notes = "Creates a new location. The name of the location is it's functional key and must be unqiue. Returns the saved location",
+            response = Location.class)
+    @PostMapping("/v1/locations")
+    public ResponseEntity<?> create(@RequestBody Location location) {
+        Optional<Location> x = locationRepository.findByName(location.getName());
+        if (x.isPresent()) {
+            GenericResponse error = new GenericResponse(HttpStatus.BAD_REQUEST, format("location with name '%s' already exists", location.getName()));
+            return new ResponseEntity<>(error, new HttpHeaders(), error.getHttpStatus());
+        }
+        Location newLocation = locationRepository.save(location);
+        return ResponseEntity.ok(newLocation);
+    }
+
+    @ApiOperation(
             value = "Finds a location by name",
             notes = "Finds a location by it's name.",
             response = Location.class)
@@ -61,22 +83,6 @@ public class LocationController {
         } else {
             GenericResponse notFound = new GenericResponse(HttpStatus.NOT_FOUND, format("no location found with name '%s'", name));
             return ResponseEntity.status(404).body(notFound);
-        }
-    }
-
-    @ApiOperation(
-            value = "Creates a new location",
-            notes = "Creates a new location. The name of the location is it's functional key and must be unqiue. Returns the saved location",
-            response = Location.class)
-    @PostMapping("/v1/locations")
-    public ResponseEntity<?> create(@RequestBody Location location) {
-        try {
-            Location newLocation = locationRepository.save(location);
-            return ResponseEntity.ok(newLocation);
-        } catch (DataIntegrityViolationException e) {
-            LOG.warn("DataIntegrityViolationException occurred while saving new location", e);
-            GenericResponse error = new GenericResponse(HttpStatus.BAD_REQUEST, format("location with name '%s' already exists", location.getName()));
-            return new ResponseEntity<>(error, new HttpHeaders(), error.getHttpStatus());
         }
     }
 

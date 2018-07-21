@@ -36,7 +36,7 @@ public class Config {
 
     private static String getEnvironmentValueOrDefault(String envName, String defaultValue) {
         String envValue = System.getenv(envName);
-        if (envValue == null || envName.isEmpty()) {
+        if (envValue == null || envValue.isEmpty()) {
             return defaultValue;
         }
         return envValue;
