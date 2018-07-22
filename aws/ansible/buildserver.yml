@@ -60,6 +60,10 @@
         mode: 0600
         owner: jenkins
         group: jenkins
+    - name: Log into DockerHub for jenkins
+      copy:
+        src: files/.docker/config.json
+        dest: ~jenkins/.docker/config.json
     - name: Restart service jenkins
       service:
         name: jenkins

@@ -16,10 +16,11 @@
         name: ubuntu
         append: yes
         group: docker
-    - name: Log into DockerHub
-      docker_login:
-        username: locationserviceworkshop
-        #This password should not be here in production projects, use ansible vault
-        password: devcommunity
-        email: locationserviceworkshop@gmail.com
-
+    - name: Creates .docker directory
+      file:
+        path: ~ubuntu/.docker
+        state: directory
+    - name: Log into DockerHub for ubuntu
+      copy:
+        src: files/.docker/config.json
+        dest: ~ubuntu/.docker/config.json
