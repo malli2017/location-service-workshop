@@ -46,14 +46,14 @@
           username: locationserviceworkshop
           password: devcommunity
           email: locationserviceworkshop@gmail.com
-    - name: checking that image exists: {{ service_image }}:{{ service_version }}
+    - name: "checking that image exists {{ service_image }}:{{ service_version }}"
       command: docker pull {{ service_image }}:{{ service_version }}
     - name: stop and remove if a container with name {{ service_container_name }} is running
       docker_container:
           name: "{{ service_container_name }}"
           image: "{{ service_image }}"
           state: absent
-    - name: running {{ service_image }}:{{ service_version }} with service name {{ service_container_name }}
+    - name: "running {{ service_image }}:{{ service_version }} with service name {{ service_container_name }}"
       docker_container:
         name: "{{ service_container_name }}"
         image: "{{ service_image }}:{{ service_version }}"
