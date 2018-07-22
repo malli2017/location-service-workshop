@@ -7,6 +7,30 @@
         value: "-Dpermissive-script-security.enabled=true"
     jenkins_plugins:
       - "permissive-script-security"
+      - "cloudbees-folder"
+      - "antisamy-markup-formatter"
+      - "build-timeout"
+      - "credentials-binding"
+      - "ssh-agent"
+      - "timestamper"
+      - "ws-cleanup"
+      - "ant"
+      - "gradle"
+      - "junit"
+      - "workflow-aggregator"
+      - "github-organization-folder"
+      - "pipeline-stage-view"
+      - "build-pipeline-plugin"
+      - "git"
+      - "github"
+      - "subversion"
+      - "ssh-slaves"
+      - "matrix-auth"
+      - "pam-auth"
+      - "ldap"
+      - "email-ext"
+      - "mailer"
+
   roles:
     - angstwad.docker_ubuntu
     - geerlingguy.java
