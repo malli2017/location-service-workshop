@@ -54,9 +54,9 @@ node('') {
             locationServiceImage.push("latest")
         }
 
-//        stage('deploy to Accept') {
-//            workspace = pwd()
-//            deployAccept("${workspace}", "${gitCommitId}", "")
-//        }
+        stage('deploy to accept') {
+            workspace = pwd()
+            sh "ansible-playbook -i aws/ansible/staging -e service_version=${gitCommitId} location-service-deployment/deploy-app-with-database.yml"
+        }
     }
 }
