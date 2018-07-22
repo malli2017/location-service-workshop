@@ -33,6 +33,7 @@ public class VersionController {
         public String buildTimestamp;
         public String startTimestamp;
         public String currentTime;
+        public String databaseUrl;
 
         public VersionDto(Config cfg) {
             application    = cfg.getApplicationName();
@@ -40,6 +41,7 @@ public class VersionController {
             buildTimestamp = cfg.getBuildTimestamp();
             startTimestamp = cfg.jvmStartupTimeUTC().toString();
             currentTime    = ZonedDateTime.now(UTC).toString();
+            databaseUrl    = cfg.getDatabaseUrl();
         }
     }
 }
