@@ -1,7 +1,4 @@
 #!groovy
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-
 node('') {
     def gitCommitId = null          // filled in Compile & test stage
     def buildTimestamp = null
@@ -12,7 +9,8 @@ node('') {
 
     stage('compile & unit-test') {
         gitCommitId = checkout(scm).GIT_COMMIT.substring(0, 7)
-        buildTimestamp = ZonedDateTime.now(ZoneOffset.UTC).toString()
+        // Workaround to shut up stupid script security, would've rather used: ZonedDateTime.now(ZoneOffset.UTC).toString()
+        buildTimestamp = sh(script: 'date -u +%Y-%m-%dT%H:%M:%S%Z | head -c 22', returnStdout: true)
 
         dir('location-service') {
             mavenImage.inside("--entrypoint=''") {
