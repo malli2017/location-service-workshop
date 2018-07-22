@@ -28,7 +28,8 @@ Next steps assume you are working on Linux and you have a working AWS account.
  6. On the command line, execute: `aws configure` and configure the credentials of the account 
     with the credentials of ansible-all (which has AmazonEC2FullAccess rights), set region to *us-west-2* 
     and output format to json.
- 7. Automatically create and start nodes in Amazon EC2 for each group using Ansible using the commands below. 
+ 7  Disable host key checking by `export ANSIBLE_HOST_KEY_CHECKING=False`
+ 8. Automatically create and start nodes in Amazon EC2 for each group using Ansible using the commands below. 
     Open provistion-workshop and comment the groups you don't want to create: 
   
     ```bash 
@@ -36,7 +37,7 @@ Next steps assume you are working on Linux and you have a working AWS account.
     ansible-playbook provision-workshop.yml"
     ```
     
- 8. We now have a bunch of servers, each with their unique tags. Now we need configure the servers of each group so 
+ 9. We now have a bunch of servers, each with their unique tags. Now we need configure the servers of each group so 
     that they can find each other by writing the access key and appropriate tag info in the inventories of each group's 
     buildserver . Wait a while for cloud-init to complete (takes approx 2 minutes, for certainty check the 
     `/var/log/cloud-init.log` on a buildserver). Then fill in the AmazonEC2ReadOnlyAccess account credentials and execute: 
@@ -49,7 +50,7 @@ Next steps assume you are working on Linux and you have a working AWS account.
     ansible-playbook -i ../ansible/production configure-inventories-for-each-group.yml -e "ansible_read_access_key=<READONLY_KEY> ansible_read_secret_key=<READONLY_SECRET>"
     ```
     
- 9. Provide each group with the IP addresses of their servers, the pipes strip away unnecessary info:
+ 10. Provide each group with the IP addresses of their servers, the pipes strip away unnecessary info:
  
     ```bash
     ansible-playbook -i ../ansible/production list-all-workshop-ip-addresses.yml | grep msg | sort | cut -c 13- | sed 's/.$//' | tee /tmp/ip.txt
@@ -72,7 +73,32 @@ Next steps assume you are working on Linux and you have a working AWS account.
        - browse and choose *aws-setup/aws_ansiblecc_key*
     * go to **Session** and enter ubuntu@${GROUP_BUILDSERVER_IP}
 
- 3. When connected to the buildserver: cd to the project directory containing the platform scripts ```cd location-service-workshop/ansible```
+ 3. When connected to the buildserver: cd to the project directory containing the platform scripts ```cd location-service-workshop/aws/ansible```
  4. Test connectivity with staging servers ```ansible -i staging -m ping allservers```
  5. Test connectivity with production servers ```ansible -i production -m ping allservers```
- 5. Follow the instructions (take a look through the YAML files while waiting, start with site.yml)
+ 6. Roles are ansible scripts that manage a specific task. We use roles that install docker, java and jenkins. These
+    roles are provided by the community. All the roles we require are listed in *requirements.yml* and must be installed
+    with the command below: 
+    
+        ansible-galaxy install -r requirements.yml
+
+ 7. We are now ready to install our acceptance environment. A complete environment is decribed in the *site.yml* playbook. 
+    We can run this playbook against staging and production to get identical environments. Let's install staging: 
+ 
+        ansible-playbook -i staging site.yml
+
+ 8. Now install production as well
+ 
+        ansible-playbook -i production site.yml
+        
+ 9. Now open Jenkins. Goto the buildserver IP address in the browser with port number 8080
+    
+         username: admin
+         password: admin
+         
+         Click on Install selected plugins
+         Leave the defaults + select the jUnit plugin
+         
+         Click Install, wait for the installation to complete
+         Click finish (do not edit IP address jenkins suggest)
+          

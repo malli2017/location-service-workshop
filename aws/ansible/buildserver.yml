@@ -1,6 +1,12 @@
 ---
 - hosts: buildserver
   become: yes
+  vars:
+    jenkins_init_changes:
+      - option: "JENKINS_JAVA_OPTIONS"
+        value: "-Dpermissive-script-security.enabled=true"
+    jenkins_plugins:
+      - "permissive-script-security"
   roles:
     - angstwad.docker_ubuntu
     - geerlingguy.java
@@ -9,6 +15,26 @@
 - hosts: buildserver
   become: yes
   tasks:
+    - name: Creates .ssh directory
+      file:
+        path: ~jenkins/.ssh
+        state: directory
+    - name: Creates .m2 directory
+      file:
+        path: ~jenkins/.m2
+        state: directory
+    - name: Add docker group
+      group:
+        name: docker
+        state: present
+    - name: Add jenkins and ansible to docker group
+      user:
+        name: "{{item}}"
+        append: yes
+        group: docker
+      with_items:
+       - ubuntu
+       - jenkins
     - name: copy workshop private key to jenkins .ssh folder for automated deployments
       copy:
         src: ../aws-setup/workshop_ansiblecc_key
