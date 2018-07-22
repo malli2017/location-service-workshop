@@ -56,7 +56,9 @@ node('') {
 
         stage('deploy to accept') {
             workspace = pwd()
-            sh "ansible-playbook -i aws/ansible/staging -e service_version=${gitCommitId} location-service-deployment/deploy-app-with-database.yml"
+            // the repo in /home/ubuntu has be configured with Amazon EC2 access keys, therefore we use this path here
+            // normally this is stored in a separate repository called /platform, to which all deploy scripts have access.
+            sh "ansible-playbook -i /home/ubuntu/location-service-workshop/aws/ansible/staging -e service_version=${gitCommitId} location-service-deployment/deploy-app-with-database.yml"
         }
     }
 }
