@@ -61,7 +61,8 @@ node('') {
 
             // eval \$(ssh-agent -s) && ssh-add  are required to configure the ssh agent and add the ~jenkins/.ssh/id_rsa identity,
             // this identiy is automatically configured by our provisioning scripts to give Jenkins access.
-            sh "eval \$(ssh-agent -s) && ssh-add && ansible-playbook -i /home/ubuntu/location-service-workshop/aws/ansible/staging -e service_version=${gitCommitId} location-service-deployment/deploy-app-with-database.yml"
+            sh "eval \$(ssh-agent -s) && ssh-add ~jenkins/.ssh/workshop_ansiblecc_key && " +
+                    " ansible-playbook -i /home/ubuntu/location-service-workshop/aws/ansible/staging -e service_version=${gitCommitId} location-service-deployment/deploy-app-with-database.yml"
         }
     }
 }
