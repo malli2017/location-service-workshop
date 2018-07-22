@@ -36,7 +36,7 @@ node('') {
                     " -e DB_URL=jdbc:postgresql://db/locationservice") { service ->
                 // --link adds an entry into the /etc/hosts file and maps *db* to the IP address of the postgres container
 
-                maven.inside("--link ${service.id}:service" +
+                mavenImage.inside("--link ${service.id}:service" +
                         " -e LOCATION_SERVICE_ADDRESS=service:8080" +
                         " --entrypoint='' ") {
                     // --link adds an entry into the /etc/hosts file and maps *service* to the IP address of the postgres container
