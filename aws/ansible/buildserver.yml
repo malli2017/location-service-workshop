@@ -2,9 +2,7 @@
 - hosts: buildserver
   become: yes
   vars:
-    jenkins_init_changes:
-      - option: "JENKINS_JAVA_OPTIONS"
-        value: "-Dpermissive-script-security.enabled=true"
+    jenkins_java_options: "-Djenkins.install.runSetupWizard=false -Dpermissive-script-security.enabled=true"
     jenkins_plugins:
       - "permissive-script-security"
       - "cloudbees-folder"
