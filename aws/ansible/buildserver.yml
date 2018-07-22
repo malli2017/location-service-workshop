@@ -66,3 +66,7 @@
         mode: 0600
         owner: jenkins
         group: jenkins
+    - name: Restart service jenkins
+      service:
+        name: jenkins
+        state: restarted
