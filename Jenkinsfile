@@ -2,7 +2,8 @@
 node('') {
     def gitCommitId = null          // filled in Compile & test stage
     def buildTimestamp = null
-    def dockerImageId = "location-workshop/location-service"
+    // locationserviceworkshop must match a valid docker hub account
+    def dockerImageId = "locationserviceworkshop/location-service"
     def mavenImage = docker.image('maven:3.5.2-jdk-8')
     def postgresImage = docker.image('postgres:9.6')
     def locationServiceImage = null
@@ -44,5 +45,18 @@ node('') {
             }
         }
         junit '**/target/surefire-reports/*.xml'
+    }
+
+    if (env.BRANCH_NAME == 'master') {
+        stage('push image to docker hub') {
+            locationServiceImage.push()
+            // also tag and push as latest. so we have an easy handle on the latest produced image
+            locationServiceImage.push("latest")
+        }
+
+//        stage('deploy to Accept') {
+//            workspace = pwd()
+//            deployAccept("${workspace}", "${gitCommitId}", "")
+//        }
     }
 }

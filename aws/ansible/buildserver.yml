@@ -30,7 +30,6 @@
       - "mailer"
 
   roles:
-    - angstwad.docker_ubuntu
     - geerlingguy.java
     - geerlingguy.jenkins
 
@@ -49,14 +48,11 @@
       group:
         name: docker
         state: present
-    - name: Add jenkins and ansible to docker group
+    - name: Add jenkins
       user:
-        name: "{{item}}"
+        name: jenkins
         append: yes
         group: docker
-      with_items:
-       - ubuntu
-       - jenkins
     - name: copy workshop private key to jenkins .ssh folder for automated deployments
       copy:
         src: ../aws-setup/workshop_ansiblecc_key

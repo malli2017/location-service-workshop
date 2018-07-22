@@ -1,5 +1,25 @@
 ---
-- hosts: docker  # see the inventory file
-  become: yes    # become a sudo user when running this play!
-  roles:         # we depend on other roles that install docker
+- hosts: allservers  # see the inventory file, also includes the build server
+  become: yes        # become a sudo user when running this play!
+  roles:             # we depend on other roles that install docker
     - angstwad.docker_ubuntu
+
+- hosts: allservers  # see the inventory file
+  become: yes
+  tasks:
+    - name: Add docker group
+      group:
+        name: docker
+        state: present
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        append: yes
+        group: docker
+    - name: Log into DockerHub
+      docker_login:
+        username: locationserviceworkshop
+        #This password should not be here in production projects, use ansible vault
+        password: devcommunity
+        email: locationserviceworkshop@gmail.com
+
