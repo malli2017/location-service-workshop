@@ -1,0 +1,74 @@
+---
+# Example run: ansible-playbook -i staging --extra-vars "service_version=7a96770" deploy-app-with-database.yml
+- hosts: 127.0.0.1
+  connection: local  #don't ssh to remote machines, this is just a simple check that can be done locally
+  tasks:
+    - name: checking prerequisites
+      fail: msg="service_version is undefined, provide the service version to deploy using -e \"service_version=7a96770\""
+      when: service_version is undefined
+
+- hosts: docker
+  become: yes
+  vars:
+    service_container_name: location-service
+    service_image: locationserviceworkshop/location-service
+    service_public_port: 8080
+    #service_version: must supplied when calling ansible!
+    postgres_container_name: "{{ service_container_name }}-db"
+    postgres_public_port: 5432
+    postgres_version: 9.6.1
+    # do not do this in prod! pull them from a vault file!
+    database_user: locationservice
+    database_password: locationservice
+    restart_policy: unless-stopped
+  tasks:
+    - name: ensure the database is running
+      docker_container:
+        name: "{{ postgres_container_name }}"
+        image: postgres:{{ postgres_version }}
+        state: started
+        restart_policy: "{{ restart_policy }}"
+        ports:
+          - "{{ postgres_port }}:5432"
+        env:
+          # normally you use a vault for these parameters
+          # The postgres container will automatically create a database with the name of POSTGRES_USER if POSTGRES_DB is
+          # explicitly provided
+          POSTGRES_USER: "{{ database_user }}"
+          POSTGRES_PASSWORD: "{{ database_password }}"
+
+    - name: create database connnection string
+      set_fact:
+          connection_string: jdbc:postgresql://{{ item }}:{{ postgres_public_port }}/{{ database_user }}
+      with_inventory_hostnames: docker
+    - name: login to DockerHub remote registry
+      docker_login:
+          username: locationserviceworkshop
+          password: devcommunity
+          email: locationserviceworkshop@gmail.com
+    - name: checking that image exists: {{ service_image }}:{{ service_version }}
+      command: docker pull {{ service_image }}:{{ service_version }}
+    - name: stop and remove if a container with name {{ service_container_name }} is running
+      docker_container:
+          name: "{{ service_container_name }}"
+          image: "{{ service_image }}"
+          state: absent
+    - name: running {{ service_image }}:{{ service_version }} with service name {{ service_container_name }}
+      docker_container:
+        name: "{{ service_container_name }}"
+        image: "{{ service_image }}:{{ service_version }}"
+        state: started
+        restart_policy: "{{ restart_policy }}"
+        ports: "{{ service_public_port }}:8080"
+        env:
+            #connection string is generated in the second task!
+            DB_URL: "{{ connection_string }}"
+            DB_USER: "{{ database_user }}"
+            DB_PASSWORD: "{{ database_password }}"
+    - name: wait till service is up (poll /version)
+      command: curl --silent http://localhost:{{ service_public_port }}/version
+      register: result
+      until: result.stdout.find("location-service") != -1
+      retries: 30
+      delay: 3
+      changed_when: false
