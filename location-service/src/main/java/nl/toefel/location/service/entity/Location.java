@@ -39,6 +39,10 @@ public class Location {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Double getLat() {
         return lat;
     }
@@ -54,5 +58,6 @@ public class Location {
     public void setLon(Double lon) {
         this.lon = lon;
     }
+
 
 }

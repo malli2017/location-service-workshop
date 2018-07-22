@@ -17,6 +17,4 @@ Insert a location
 
 ```bash
 curl -X POST -d '{"name": "CGI Rotterdam", "lat": 51.953326, "lon": 4.5586302}' -H 'Content-Type: application/json' localhost:8080/v1/locations
-
-
 ```
