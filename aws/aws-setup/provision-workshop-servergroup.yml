@@ -81,4 +81,5 @@
       with_items:
         - {tag: 'buildserver',  provision_script: 'aws-ansiblecc-setup.sh'}
         - {tag: 'acc_docker',   provision_script: 'aws-awsnode-setup.sh'}
-        - {tag: 'prd_docker',   provision_script: 'aws-awsnode-setup.sh'}
+# maybe disable production, so we can have more groups
+#        - {tag: 'prd_docker',   provision_script: 'aws-awsnode-setup.sh'}
