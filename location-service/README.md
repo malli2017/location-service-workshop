@@ -12,20 +12,11 @@ Run the app
 
     Application
     
-Insert a customer
-
-```bash
-curl -X POST -d '{"firstName": "christophe", "lastName": "hesters"}' -H 'Content-Type: application/json' localhost:8080/customers
-{"id":4,"firstName":"christophe","lastName":"hesters"}
-
-curl localhost:8080/customers/4
-{"id":4,"firstName":"christophe","lastName":"hesters"}
-```
 
 Insert a location
 
 ```bash
-curl -X POST -d '{"name": "CGI Rotterdam", "lat": 51.953326, "lon": 4.5586302}' -H 'Content-Type: application/json' localhost:8080/locations
+curl -X POST -d '{"name": "CGI Rotterdam", "lat": 51.953326, "lon": 4.5586302}' -H 'Content-Type: application/json' localhost:8080/v1/locations
 
 
 ```
