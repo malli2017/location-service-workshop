@@ -23,12 +23,12 @@ public abstract class ApiTestBase {
         for (int i = 0; i < 30; i++) {
             try {
                 get(BASE_URL + "/version").then().statusCode(200);
-                LOG.info("Application responded with 200 on /version, assuming it's UP.");
-            } catch(Exception e) {
+                LOG.info("Application responded with 200 on " + BASE_URL + "/version, assuming it's UP.");
+            } catch (Exception e) {
                 // java does not allow me to catch ConnectException, because it's not thrown 'supposedly'
                 // but it IS thrown -_-
                 if (e instanceof ConnectException) {
-                    LOG.info("Application did not respond with 200 on /version, assuming it's not up yet.");
+                    LOG.info("Application did not respond with 200 on " + BASE_URL + "/version, assuming it's not up yet.");
                     Thread.sleep(1000);
                     continue;
                 }

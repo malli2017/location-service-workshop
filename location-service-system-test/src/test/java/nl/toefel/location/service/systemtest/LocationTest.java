@@ -20,7 +20,7 @@ public class LocationTest extends ApiTestBase {
 
         // delete test-data to make sure you start with a clean slate.
         // deleting before instead of after the test also helps while debugging after failed tests
-        delete("/v1/locations/" + locationName).then().statusCode(anyOf(equalTo(200), equalTo(404)));
+        delete(BASE_URL + "/v1/locations/" + locationName).then().statusCode(anyOf(equalTo(200), equalTo(404)));
 
         // save a new one
         given()
