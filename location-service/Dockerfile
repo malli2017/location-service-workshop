@@ -16,7 +16,7 @@ ARG build_timestamp
 
 # build time arguments are not preserved after the build has finished
 # therefore set the build arguments as environment variables so the application can pick them up
-ENV GIT_COMMIT $git_commit_id
+ENV COMMIT_ID $git_commit_id
 ENV BUILD_TIMESTAMP $build_timestamp
 
 # copy the produced jar file and it's dependencies into the image to /opt
