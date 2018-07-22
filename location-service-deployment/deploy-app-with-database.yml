@@ -29,7 +29,7 @@
         state: started
         restart_policy: "{{ restart_policy }}"
         ports:
-          - "{{ postgres_port }}:5432"
+          - "{{ postgres_public_port }}:5432"
         env:
           # normally you use a vault for these parameters
           # The postgres container will automatically create a database with the name of POSTGRES_USER if POSTGRES_DB is
