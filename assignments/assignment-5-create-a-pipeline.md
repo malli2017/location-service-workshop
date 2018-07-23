@@ -1,6 +1,7 @@
 # Assignment 5 Create a CI/CD pipeline
 
- 1. This assignment requires that you've completed [assignment 2](assignment-2-install-docker-jenkins.md)  
+ 1. This assignment requires that you've completed [assignment 2](assignment-2-install-docker-jenkins.md)
+    In step   
         
  2. Now open Jenkins. Goto the buildserver IP address in the browser with port number 8080
     
