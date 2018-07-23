@@ -114,3 +114,18 @@ First let's get a gif image to serve as content:
 1. To get an idea of the processes running inside the container. run
 
        docker top [nginx-container-id]
+       
+       
+### Tagging an image
+
+Let's say you want to create an alias for the nginx image, you can do that by tagging it. 
+
+    docker tag redis amoeba:current
+    
+    docker image ls
+    # find the image named ameuba
+    
+    docker image rm amoeba:current
+    # removes the alias (not the redis image)
+    
+We often tag our images with the commit id.
