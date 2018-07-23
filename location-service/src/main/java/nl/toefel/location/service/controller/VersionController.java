@@ -22,7 +22,6 @@ public class VersionController {
         return new VersionDto(Config.fromEnvironment());
     }
 
-
     /**
      * All fields are public so that no getters/setters need to be generated for JSON unmarshalling.
      * Promote to separate class if it get's used elsewhere.
@@ -33,7 +32,6 @@ public class VersionController {
         public String buildTimestamp;
         public String startTimestamp;
         public String currentTime;
-        public String databaseUrl;
 
         public VersionDto(Config cfg) {
             application    = cfg.getApplicationName();
@@ -41,7 +39,6 @@ public class VersionController {
             buildTimestamp = cfg.getBuildTimestamp();
             startTimestamp = cfg.jvmStartupTimeUTC().toString();
             currentTime    = ZonedDateTime.now(UTC).toString();
-            databaseUrl    = cfg.getDatabaseUrl();
         }
     }
 }

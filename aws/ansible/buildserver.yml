@@ -44,6 +44,10 @@
       file:
         path: ~jenkins/.m2
         state: directory
+    - name: Creates .docker directory
+      file:
+        path: ~jenkins/.docker
+        state: directory
     - name: Add docker group
       group:
         name: docker
