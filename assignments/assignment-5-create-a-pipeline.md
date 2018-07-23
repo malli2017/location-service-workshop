@@ -1,4 +1,4 @@
-# Assignment 4 Creating a pipeline
+# Assignment 5 Create a CI/CD pipeline
 
  1. This assignment requires that you've completed [assignment 2](assignment-2-install-docker-jenkins.md)  
         
@@ -19,13 +19,13 @@
  
          Name: location-workshop-pipeline
          Type: Multi-branch pipeline
-         
          Click OK
-         In the owner field, enter: <the github account that forked>
-         In the repository field, enter: location-service-workshop
+
          Click on Add Credentials and enter your github username and password 
             -> (otherwise we will hit the rate limiter for anon requests)
             
+         In the owner field, enter: <the github account that forked>
+         In the repository field, enter: location-service-workshop
          Go down and enable Build periodically, select 1 minute for time interval.
          Click save.
          

@@ -5,7 +5,7 @@ how CI/CD automatically deploys it to staging (accept).
 
 Assignment: add an optional description column to Location.
 
- 1. Create a branch feature-description in your personal fork created in [assignment-4](assignment-4-create-a-pipeline.md)
+ 1. Create a branch feature-description in your personal fork created in [assignment-4](assignment-5-create-a-pipeline.md)
  
         git checkout -b feature-description
  
