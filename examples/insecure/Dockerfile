@@ -20,15 +20,16 @@ ENV COMMIT_ID $git_commit_id
 ENV BUILD_TIMESTAMP $build_timestamp
 
 # copy the produced jar file and it's dependencies into the image to /opt
-# spring boot creates a shaded jar, we just use the original jar file!
-COPY target/location-service-1.0.0.jar.original /opt/location-service/location-service.jar
 COPY target/lib /opt/location-service/lib
 
 # when the users runs a container, it's working directory will be set to /opt/location-service
 WORKDIR /opt/location-service
 
+# spring boot creates a shaded jar, we just use the original jar file!
+COPY target/location-service-1.0.0.jar.original /opt/location-service/location-service.jar
+
 # start our application when the container is started!
 # exec is required to make java the root process instead of /bin/sh.
 # when processes get shut down, linux sends the SIGTERM signal, received by the root process of the container.
 # Java our root process now, so it receives the SIGTERM and can start a graceful shutdown.
-CMD exec java -cp location-service.jar:lib/* nl.toefel.location.service.Application
+CMD exec java -cp location-service.jar:lib/* -Ddb.password="$DB_PASSWORD" nl.toefel.location.service.Application

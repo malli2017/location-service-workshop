@@ -1,4 +1,4 @@
-# Assignment 5 Adding a feature
+# Assignment 6 Adding a feature
 
 The goal of this assignment is to add a feature to the location-service and see
 how CI/CD automatically deploys it to staging (accept).
