@@ -34,7 +34,7 @@ Next steps assume you are working on Linux and you have a working AWS account.
   
     ```bash 
     cd aws-setup
-    ansible-playbook provision-workshop.yml"
+    ansible-playbook provision-workshop.yml
     ```
     
  9. We now have a bunch of servers, each with their unique tags. Now we need configure the servers of each group so 

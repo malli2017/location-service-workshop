@@ -3,38 +3,59 @@
  1. This assignment requires that you've completed [assignment 2](assignment-2-install-docker-jenkins.md)
     In step   
         
- 2. Now open Jenkins. Goto the buildserver IP address in the browser with port number 8080
+ 1. Now open Jenkins. Goto the buildserver IP address in the browser with port number 8080
     
          username: admin
          password: admin
          
-         Click on Install selected plugins
-         Leave the defaults + select the jUnit plugin
-         
-         Click Install, wait for the installation to complete
+         Click on Install suggested plugins
          Click finish (do not edit IP address jenkins suggest)
   
- 3. Now fork [toefel18/location-service-workshop](https://github.com/toefel18/location-service-workshop) on github
+ 1. Now fork [toefel18/location-service-workshop](https://github.com/toefel18/location-service-workshop) with your 
+    personal github account. (the fork button is on the top-right)
   
- 3. Create a multibranch pipeline on *New Item*
+ 1. In Jenkins, create a multibranch pipeline that builds your forked repository.
  
-         Name: location-workshop-pipeline
+         Click on *New Item*
+ 
+         Name: location-service-workshop-pipeline
          Type: Multi-branch pipeline
          Click OK
 
-         Click on Add Credentials and enter your github username and password 
-            -> (otherwise we will hit the rate limiter for anon requests)
-            
+         Scroll to Branch Sources
+         Click on add source and select Github
+         Add credentials and select 'Jenkins' (otherwise we hit the github rate limiter)
+           -> Enter your personal github username and password, and enter github in the id field
+              If you do not add credentials, you will hit the github anonymous api rate limiter.
          In the owner field, enter: <the github account that forked>
          In the repository field, enter: location-service-workshop
-         Go down and enable Build periodically, select 1 minute for time interval.
+         
+         Scroll to Scan Multibranch Pipeline Triggers
+         enable 'Periodically if not otherwise run'
+           -> Select 1 minute for time interval.
+         This will check github for changes once per minute, 
+         and automatically build them :D  
+         
          Click save.
          
-         Open the project in Jenkins, click on master and wait for the pipeline to complete.
+         Go to the home page by clicking the logo
+         Click on the pipeline you created
+         Click on master
          
-         Once complete, then goto the IP address of **groupx_acc_docker**:8080/version. The IP address
-         will be communicated via slack.
+         Wait for master to complete, this will take approx 3-5 minutes.
+         Meanwhile, inspect the Jenkinsfile at the root of this repository, which contains
+         the instructions Jenkins is currently executing. 
+       
+ 1. Now go to the public IP address of your docker (accept) server `<ip>:8080/version`.
+ 
+ 1. Insert a location
+ 
+     ```bash
+     curl -X POST -d '{"name": "CGI-Rotterdam", "lat": 51.953326, "lon": 4.5586302}' -H 'Content-Type: application/json' <ip>:8080/v1/locations
+     ```
+     
+     Get the location
+     ```bash
+     curl <ip>:8080/v1/locations/CGI-Rotterdam
+     ```
          
-         
-         
-    
