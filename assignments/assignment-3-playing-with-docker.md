@@ -78,7 +78,7 @@ We can map the port from the host OS to the container by providing a `-p <host-p
 
 1. Let's interact with redis!
 
-       sudo ant install -y redis-tools
+       sudo apt install -y redis-tools
        
        redis-cli -h localhost -p <host-port>
        
