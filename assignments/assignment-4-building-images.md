@@ -63,4 +63,21 @@ command line arguments to pass parameters. They are OS agnostic.
 1. Create a bash script that prints the environment variable MY_NAME.
  
 1. Create a Dockerfile that that runs that script
-   
+
+
+### Optional: Packaging a Java application
+
+This exercise can only be done from the build-server.
+
+1. Install maven
+
+       sudo apt install -y maven
+
+       cd /home/ubuntu/location-service-workshop/location-service
+       mvn clean verify
+       
+1. Build the java app
+
+       docker build -t java-app:new .
+       
+1. What do you see when you try to run it?
