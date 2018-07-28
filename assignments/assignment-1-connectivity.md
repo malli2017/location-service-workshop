@@ -15,7 +15,7 @@
     
           start putty and go to **Connection>SSH>Auth**
           select private key for authentication
-           -> browse and choose *aws/aws-setup/aws_ansiblecc_key*
+           -> browse and choose *aws/aws-setup/aws_ansiblecc_key_putty.ppk*
           go to **Session** and enter ubuntu@${GROUP_BUILDSERVER_IP}
 
  4. When connected to the buildserver: cd to the project directory containing the platform scripts 
